@@ -21,6 +21,7 @@ If you just want to use it, get it here
 - Login with Google or PTC
 - Show pokemons
 - Catch pokemon (try not to use it, go outside and play!)
+- Change location (don't teleport too often and too much!)
 - Settings
 - Ask for donation :)
 
