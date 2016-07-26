@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <Preference android:key="version_info" android:title="@string/changelog_title" />
+
+    <PreferenceScreen android:key="community" android:title="@string/communities"
+        android:summary="@string/communities_summary"
+        >
+        <intent android:action="android.intent.action.VIEW"
+            android:data="https://plus.google.com/communities/113038509463835490119" />
+    </PreferenceScreen>
+    <PreferenceScreen android:key="support" android:title="@string/support"
+        android:summary="@string/support_summary">
+        <intent android:action="android.intent.action.VIEW"
+            android:data="http://paypal.me/kiideveloper" />
+    </PreferenceScreen>
+    <PreferenceScreen android:key="developer" android:title="@string/developer"
+        android:summary="@string/developer_summary" >
+        <intent android:action="android.intent.action.VIEW"
+            android:data="http://forum.xda-developers.com/member.php?u=5019541" />
+    </PreferenceScreen>
+
+    <PreferenceCategory android:title="@string/settings">
+        <ListPreference android:title="@string/pokestop"
+            android:key="show_pokestop"
+            android:defaultValue="NONE"
+            android:entries="@array/pokestop_entries"
+            android:entryValues="@array/pokestop_values" />
+        <ListPreference android:key="pokeball"
+            android:title="@string/pokeball"
+            android:entries="@array/pokeball_entries"
+            android:entryValues="@array/pokestop_values"
+            android:defaultValue="ULTRABALL" />
+
+    </PreferenceCategory>
+
+
+
+</PreferenceScreen>

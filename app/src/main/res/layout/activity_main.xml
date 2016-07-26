@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.design.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".PokeMapsActivity">
+
+
+
+        <FrameLayout android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/main_container"/>
+
+
+        <com.dmitrymalkovich.android.ProgressFloatingActionButton
+            android:id="@+id/refreshProgress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/fab_margin"
+            android:layout_gravity="bottom|center"
+            android:clickable="true">
+
+            <android.support.design.widget.FloatingActionButton
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:foreground="@drawable/pokeball"
+                app:rippleColor="?attr/actionModeSplitBackground"
+                android:id="@+id/location_fab"
+                app:srcCompat="@drawable/pokeball" />
+
+            <ProgressBar
+                style="@style/Widget.AppCompat.ProgressBar"
+                android:id="@+id/progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </com.dmitrymalkovich.android.ProgressFloatingActionButton>
+
+        <TextView
+            android:id="@+id/status"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:visibility="gone"
+            android:background="#ccffffff"
+            android:textColor="@android:color/secondary_text_light"
+            android:layout_margin="2dp"
+            android:paddingLeft="2dp"
+            android:gravity="left|center_vertical"
+            android:layout_gravity="top"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </android.support.design.widget.CoordinatorLayout>
+
+
+    <android.support.design.widget.NavigationView
+        android:id="@+id/left_drawer"
+        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        android:background="#FFF"/>
+
+</android.support.v4.widget.DrawerLayout>
