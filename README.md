@@ -24,10 +24,14 @@ If you just want to use it, get it here
 - Settings
 - Ask for donation :)
 
+# Community
+https://plus.google.com/communities/113038509463835490119
+
 # Credits
 All the great people at https://www.reddit.com/r/pokemongodev/
 https://www.reddit.com/r/pokemongodev/comments/4trjum/pok%C3%A9mon_go_development_archive_works_in_progress/
 
 # Warning
 see https://www.reddit.com/r/pokemongodev/comments/4td499/a_note_about_security/
+
 I have no interests in stealing your accounts and passwords. 
