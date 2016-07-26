@@ -9,6 +9,8 @@ To start, import it into android studio. Then get a google map API key from goog
 If you just want to use it, get it here 
 ###[Download Section](https://github.com/kiideveloper/pokiimap/releases)
 
+###[WARNING] If you try to catch the pokemon and they all fleed, that means you teleport too much and is temporarily blocked from catching anything. Close the game and wait 15 mins before trying it again!
+
 - Download and install the APK
 - Press the buttons to play
 
