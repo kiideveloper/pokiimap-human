@@ -7,4 +7,22 @@ To start, import it into android studio. Then get a goole map API key from googl
 
 # Download
 If you just want to use it, get it here 
-###[Download Section](https://github.com/iideveloper/pokiimap/releases)
+###[Download Section](https://github.com/kiideveloper/pokiimap/releases)
+
+- Download and install the APK
+- Press the buttons to play
+
+<p align="center">
+  <img src="https://github.com/kiideveloper/pokiimap/blob/master/screen2.png" width="300"/>
+  <img src="https://github.com/kiideveloper/pokiimap/blob/master/screen1.png" width="300"/>
+</p>
+
+# Features
+- Login with Google or PTC
+- Show pokemons
+- Catch pokemon (try not to use it, go outside and play!)
+- Settings
+- Ask for donation :)
+
+# Credits
+All the great people at https://www.reddit.com/r/pokemongodev/
