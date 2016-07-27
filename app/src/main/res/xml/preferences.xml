@@ -29,7 +29,7 @@
         <ListPreference android:key="pokeball"
             android:title="@string/pokeball"
             android:entries="@array/pokeball_entries"
-            android:entryValues="@array/pokestop_values"
+            android:entryValues="@array/pokeball_values"
             android:defaultValue="ULTRABALL" />
 
     </PreferenceCategory>
