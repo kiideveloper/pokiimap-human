@@ -20,11 +20,16 @@
     </style>
   </head>
   <body>
+$ 0.3
+  % Version 0.3
+  * 0.3 alpha release
+  * User session improvements
+  * Various of other fixes and enhancements
+  * use at your own risk, don't abuse, blah blah...
 $ 0.2
   % Version 0.2
   * 0.2 alpha release
   * fixed crash in setting
-  * use at your own risk, don't abuse, blah blah...
 $ 0.1
   % Version 0.1
   * 0.1 alpha release
