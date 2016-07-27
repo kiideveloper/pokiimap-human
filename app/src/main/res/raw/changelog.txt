@@ -20,11 +20,15 @@
     </style>
   </head>
   <body>
+$ 0.2
+  % Version 0.2
+  * 0.2 alpha release
+  * fixed crash in setting
+  * use at your own risk, don't abuse, blah blah...
 $ 0.1
   % Version 0.1
   * 0.1 alpha release
   * most things should work :)
-  * use at your own risk, don't abuse, blah blah...
 $ END_OF_CHANGE_LOG
   </body>
 </html>
