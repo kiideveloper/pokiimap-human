@@ -26,9 +26,11 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.annimon.stream.function.Function;
 import com.apptopus.progressive.Progressive;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
@@ -82,7 +84,7 @@ public class PokeMapsActivity extends AppCompatActivity implements GoogleApiClie
 
     View mRootView;
 
-    View mSignin;
+    Button mSignin;
     View mSignout;
 
     TextView mHeadLine;
@@ -150,7 +152,7 @@ public class PokeMapsActivity extends AppCompatActivity implements GoogleApiClie
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
                 getSupportActionBar().setTitle(R.string.profile);
-                updateProfile();
+//                updateProfile();
             }
         };
 
@@ -170,7 +172,7 @@ public class PokeMapsActivity extends AppCompatActivity implements GoogleApiClie
         NavigationView navigationView = (NavigationView) findViewById(R.id.left_drawer);
         View headerLayout = navigationView.inflateHeaderView(R.layout.signed_in_layout);
 
-        mSignin = headerLayout.findViewById(R.id.sign_in);
+        mSignin = (Button) headerLayout.findViewById(R.id.sign_in);
         mSignin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -250,7 +252,7 @@ public class PokeMapsActivity extends AppCompatActivity implements GoogleApiClie
         transaction.replace(R.id.main_container, mMapWrapperFragment)
                 .commit();
 
-        initPokemonGOApi();
+        initPokemonGOApi(new ProfileUpdateFunction());
 
     }
 
@@ -362,7 +364,8 @@ public class PokeMapsActivity extends AppCompatActivity implements GoogleApiClie
 
     }
 
-    private void initPokemonGOApi(){
+
+    private void initPokemonGOApi(final Function<Object, Object> callback){
         final String authJson = pref.getString("auth", "");
 
         if(TextUtils.isEmpty(authJson)){
@@ -371,6 +374,14 @@ public class PokeMapsActivity extends AppCompatActivity implements GoogleApiClie
         }
 
         AsyncTask at = new AsyncTask() {
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+//                mSignin.setEnabled(false);
+                mSignin.setText(R.string.loading_);
+            }
+
             @Override
             protected Object doInBackground(Object[] objects) {
 
@@ -386,13 +397,13 @@ public class PokeMapsActivity extends AppCompatActivity implements GoogleApiClie
                     }
                 }catch (Exception e){
                     e.printStackTrace();
-                    final String error = e.getMessage();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            showMessage(error);
-                        }
-                    });
+//                    final String error = e.getMessage();
+//                    runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            showMessage(error);
+//                        }
+//                    });
                 }
                 return null;
             }
@@ -400,6 +411,8 @@ public class PokeMapsActivity extends AppCompatActivity implements GoogleApiClie
             @Override
             protected void onPostExecute(Object o) {
                 super.onPostExecute(o);
+//                mSignin.setEnabled(false);
+                mSignin.setText(R.string.sign_in);
                 if(o instanceof  PlayerProfile){
                     PlayerProfile playerProfile = (PlayerProfile)o;
                     Map<String, String> stats = new HashMap<>();
@@ -411,6 +424,9 @@ public class PokeMapsActivity extends AppCompatActivity implements GoogleApiClie
                     setProfile("", "", Collections.<String, String>emptyMap());
                 }
 
+                if(callback != null){
+                    callback.apply(o);
+                }
 
             }
         };
@@ -419,7 +435,25 @@ public class PokeMapsActivity extends AppCompatActivity implements GoogleApiClie
 
     @MainThread
     private void login() {
-        startActivityForResult(new Intent(this, AuthUiActivity.class), 1);
+        final String authJson = pref.getString("auth", "");
+
+        if(!TextUtils.isEmpty(authJson)){
+            initPokemonGOApi(new ProfileUpdateFunction(){
+                @Override
+                public Object apply(Object o) {
+                    if(o instanceof PlayerProfile){
+                        return super.apply(o);
+                    }else{
+                        startActivityForResult(new Intent(PokeMapsActivity.this, AuthUiActivity.class), 1);
+                    }
+                    return Void.TYPE;
+                }
+            });
+            return;
+        }
+
+
+
     }
 
     @Override
@@ -430,7 +464,7 @@ public class PokeMapsActivity extends AppCompatActivity implements GoogleApiClie
             }
             showMessage(R.string.loggedin_message,
                     Snackbar.LENGTH_LONG);
-            initPokemonGOApi();
+            initPokemonGOApi(new ProfileUpdateFunction());
             return;
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -553,7 +587,7 @@ public class PokeMapsActivity extends AppCompatActivity implements GoogleApiClie
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if("auth".equals(key)){
-            initPokemonGOApi();
+            initPokemonGOApi(new ProfileUpdateFunction());
         }
     }
 
@@ -562,6 +596,24 @@ public class PokeMapsActivity extends AppCompatActivity implements GoogleApiClie
         super.onResume();
         mTracker.setScreenName("PokiiMap");
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+    }
+
+    private class ProfileUpdateFunction implements Function<Object, Object>{
+
+        @Override
+        @MainThread
+        public Object apply(Object o) {
+            if(o instanceof  PlayerProfile){
+                PlayerProfile playerProfile = (PlayerProfile)o;
+                Map<String, String> stats = new HashMap<>();
+                stats.put("Level", String.valueOf(playerProfile.getStats().getLevel()));
+                stats.put("XP", String.valueOf(playerProfile.getStats().getExperience()));
+                setProfile(playerProfile.getUsername(), playerProfile.getTeam().name(), stats);
+            }else if(o != null){
+                showMessage(String.valueOf(o));
+            }
+            return Void.TYPE;
+        }
     }
 
     private AtomicBoolean isUpdatingProfile = new AtomicBoolean(false);
@@ -601,16 +653,7 @@ public class PokeMapsActivity extends AppCompatActivity implements GoogleApiClie
                         if(navigationView != null){
                             Progressive.hideProgress(navigationView);
                         }
-                        if(o instanceof  PlayerProfile){
-                            PlayerProfile playerProfile = (PlayerProfile)o;
-                            Map<String, String> stats = new HashMap<>();
-                            stats.put("Level", String.valueOf(playerProfile.getStats().getLevel()));
-                            stats.put("XP", String.valueOf(playerProfile.getStats().getExperience()));
-
-                            setProfile(playerProfile.getUsername(), playerProfile.getTeam().name(), stats);
-                        }else{
-                            showMessage(String.valueOf(o));
-                        }
+                        new ProfileUpdateFunction().apply(o);
                     }
                 };
                 at.execute();
