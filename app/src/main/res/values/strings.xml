@@ -50,4 +50,5 @@
     <string name="developer">Developer</string>
     <string name="developer_summary">Find me on xda-developers, the best forum in the world!</string>
     <string name="loading_">Loading..</string>
+    <string name="refresh_interrupted">Refresh interrupted</string>
 </resources>

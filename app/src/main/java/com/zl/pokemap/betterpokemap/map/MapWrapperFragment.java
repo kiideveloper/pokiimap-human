@@ -59,6 +59,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
 
+import java.io.InterruptedIOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -470,7 +471,12 @@ public class MapWrapperFragment extends Fragment implements OnMapReadyCallback,
                             }catch (RemoteServerException re){
                                 re.printStackTrace();
                                 stopped.set(true);
-                                showErrorWorker(getString(R.string.server_error_message), Snackbar.LENGTH_INDEFINITE);
+                                if(re.getCause() instanceof InterruptedIOException){
+                                    //it's okay
+                                    showErrorWorker(getString(R.string.refresh_interrupted), Snackbar.LENGTH_SHORT);
+                                }else{
+                                    showErrorWorker(getString(R.string.server_error_message), Snackbar.LENGTH_INDEFINITE);
+                                }
                             }catch (Exception e){
                                 e.printStackTrace();
                                 return e;
