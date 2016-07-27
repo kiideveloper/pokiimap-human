@@ -1,6 +1,11 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
 
+def props = new Properties();
+File propFile = file('../private.properties')
+propFile.withInputStream{
+    props.load(it)
+}
 
 android {
     compileSdkVersion 23
@@ -28,13 +33,26 @@ android {
             storeFile file('debug.keystore')
             storePassword 'android'
         }
+        release {
+            keyAlias "${props.keyAlias}"
+            keyPassword "${props.keyPassword}"
+            storeFile file('../pokiimap.jks')
+            storePassword "${props.storePassword}"
+        }
     }
 
     buildTypes {
-        debug {
-            minifyEnabled true
-            shrinkResources false
+        release {
+            minifyEnabled false
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+        debug {
+            minifyEnabled false
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            //signingConfig signingConfigs.release
         }
     }
     dexOptions {
@@ -63,7 +81,7 @@ dependencies {
     compile 'joda-time:joda-time:2.9.4'
     compile 'com.vincentbrison.openlibraries.android:dualcache:3.0.0'
     compile 'com.android.support:design:23.0.1'
-    compile 'com.github.Grover-c13:PokeGOAPI-Java:master-SNAPSHOT'
+    compile 'com.github.Grover-c13:PokeGOAPI-Java:0.2'
     compile 'com.android.support:multidex:1.0.0'
     compile 'com.google.android.gms:play-services-location:9.2.1'
     compile 'com.google.android.gms:play-services-maps:9.2.1'

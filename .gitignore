@@ -39,6 +39,9 @@ captures/
 
 # Keystore files
 *.jks
+private.*
+google_maps_api.xml
+PokemonCatcher.java
 
 gradle/
 gradlew

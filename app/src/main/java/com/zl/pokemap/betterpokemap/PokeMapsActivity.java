@@ -38,6 +38,7 @@ import com.google.gson.Gson;
 import com.pokegoapi.api.PokemonGo;
 import com.pokegoapi.api.player.PlayerProfile;
 import com.zl.pokemap.betterpokemap.auth.AuthUiActivity;
+import com.zl.pokemap.betterpokemap.auth.CredentialProviderAdapter;
 import com.zl.pokemap.betterpokemap.auth.PmGoogleLogin;
 import com.zl.pokemap.betterpokemap.auth.PmPTCLogin;
 import com.zl.pokemap.betterpokemap.map.MapWrapperFragment;
@@ -373,9 +374,10 @@ public class PokeMapsActivity extends AppCompatActivity implements GoogleApiClie
                 try {
                     if(!TextUtils.isEmpty(authJson)){
                         Gson gson = new Gson();
-                        RequestEnvelopeOuterClass.RequestEnvelope.AuthInfo auth =
+
+                        final RequestEnvelopeOuterClass.RequestEnvelope.AuthInfo auth =
                                 gson.fromJson(authJson, RequestEnvelopeOuterClass.RequestEnvelope.AuthInfo.class);
-                        pokemonGo = new PokemonGo(auth, http);
+                        pokemonGo = new PokemonGo(new CredentialProviderAdapter(auth), http);
                         PlayerProfile profile = pokemonGo.getPlayerProfile();
                         return profile;
                     }

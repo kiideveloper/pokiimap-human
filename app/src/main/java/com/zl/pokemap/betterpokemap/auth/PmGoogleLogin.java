@@ -6,7 +6,6 @@ import android.preference.PreferenceManager;
 import android.util.Base64;
 
 import com.google.gson.Gson;
-import com.pokegoapi.auth.Login;
 import com.pokegoapi.exceptions.LoginFailedException;
 
 import java.io.BufferedReader;

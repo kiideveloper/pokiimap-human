@@ -1,6 +1,8 @@
 package com.zl.pokemap.betterpokemap.map;
 
 import android.Manifest;
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -20,6 +22,7 @@ import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.util.Property;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -184,8 +187,15 @@ public class MapWrapperFragment extends Fragment implements OnMapReadyCallback,
         //maybe later
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
         PokemonCatcher.lastCatchAttempt = prefs.getLong("last_catch_attempt", 0);
+        restartTimer();
 
-        handler.sendEmptyMessageDelayed(0, 5000);
+    }
+
+    public void restartTimer(){
+        if(handler != null && !handler.hasMessages(0)){
+            handler.sendEmptyMessageDelayed(0, 5000);
+        }
+
     }
 
     @Override
@@ -495,7 +505,9 @@ public class MapWrapperFragment extends Fragment implements OnMapReadyCallback,
                                                 image = BitmapFactory.decodeResource(getResources(), resourceID);
                                                 mo.icon(BitmapDescriptorFactory.fromBitmap(image));
                                             }
+                                            mo.alpha(0f);
                                             Marker marker = mGoogleMap.addMarker(mo);
+                                            addMarkerAnimated(marker);
                                             catchablePokemons.put(marker, cp);
                                             sb.append(marker.getTitle()).append(" ");
                                         }
@@ -524,8 +536,9 @@ public class MapWrapperFragment extends Fragment implements OnMapReadyCallback,
                                                 image = BitmapFactory.decodeResource(getResources(), resourceID);
                                                 mo.icon(BitmapDescriptorFactory.fromBitmap(image));
                                             }
+                                            mo.alpha(0f);
                                             Marker marker = mGoogleMap.addMarker(mo);
-
+                                            addMarkerAnimated(marker);
                                             pokemons.put(marker, pokemon);
                                             sb.append(marker.getTitle()).append(" ");
                                         }
@@ -550,7 +563,9 @@ public class MapWrapperFragment extends Fragment implements OnMapReadyCallback,
                                         Bitmap image = BitmapFactory.decodeResource(getResources(),
                                                 lureExpire > System.currentTimeMillis()? R.drawable.lure : R.drawable.pokestop);
                                         mo.icon(BitmapDescriptorFactory.fromBitmap(image));
+                                        mo.alpha(0f);
                                         Marker marker = mGoogleMap.addMarker(mo);
+                                        addMarkerAnimated(marker);
                                         pokestops.put(marker, pokestop);
                                     }
 
@@ -761,7 +776,7 @@ public class MapWrapperFragment extends Fragment implements OnMapReadyCallback,
                         .setAction(R.string.remove, new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                marker.remove();
+                                removeMarkerAnimated(marker);
                                 pokemons.remove(marker);
                                 if(pokemonCache != null){
                                     pokemonCache.put(String.valueOf(pokemon.getEncounterId()), pokemon.getSpawnPointId());
@@ -779,7 +794,7 @@ public class MapWrapperFragment extends Fragment implements OnMapReadyCallback,
                     @Override
                     public void run() {
                         try {
-                            marker.remove();
+                            removeMarkerAnimated(marker);
                             pokemons.remove(marker);
                         }catch (Exception e){}
                     }
@@ -827,5 +842,48 @@ public class MapWrapperFragment extends Fragment implements OnMapReadyCallback,
     public interface LocationRequestListener {
         Location requestLocation();
     }
+
+    public void removeMarkerAnimated(final Marker marker){
+        animateMarker(marker, true);
+    }
+    public void addMarkerAnimated(final Marker marker){
+        animateMarker(marker, false);
+    }
+
+    @MainThread
+    private void animateMarker(final Marker marker, final boolean remove) {
+        Property<Marker, Float> property = Property.of(Marker.class, Float.class, "alpha");
+        ObjectAnimator animator = ObjectAnimator.ofFloat(marker, property,
+                remove?1f:0f, remove?0f:1f);
+        animator.setDuration(400);
+        animator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                if(remove){
+                    marker.remove();
+                }
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animator) {
+                if(remove){
+                    marker.remove();
+                }
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animator) {
+
+            }
+        });
+        animator.start();
+    }
+
+
 }
 

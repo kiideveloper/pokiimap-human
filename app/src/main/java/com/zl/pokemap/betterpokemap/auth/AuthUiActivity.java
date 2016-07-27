@@ -31,7 +31,6 @@ import android.widget.RadioButton;
 import com.apptopus.progressive.Progressive;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
-import com.pokegoapi.auth.Login;
 import com.pokegoapi.exceptions.LoginFailedException;
 import com.zl.pokemap.betterpokemap.PokiiMapApplication;
 import com.zl.pokemap.betterpokemap.R;
