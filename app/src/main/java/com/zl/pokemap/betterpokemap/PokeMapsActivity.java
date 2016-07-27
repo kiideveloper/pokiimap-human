@@ -29,6 +29,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.apptopus.progressive.Progressive;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.common.ConnectionResult;
@@ -49,6 +50,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import POGOProtos.Networking.Envelopes.RequestEnvelopeOuterClass;
 import okhttp3.OkHttpClient;
@@ -148,6 +150,7 @@ public class PokeMapsActivity extends AppCompatActivity implements GoogleApiClie
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
                 getSupportActionBar().setTitle(R.string.profile);
+                updateProfile();
             }
         };
 
@@ -560,4 +563,61 @@ public class PokeMapsActivity extends AppCompatActivity implements GoogleApiClie
         mTracker.setScreenName("PokiiMap");
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
+
+    private AtomicBoolean isUpdatingProfile = new AtomicBoolean(false);
+    @MainThread
+    public void updateProfile(){
+        if(isUpdatingProfile.get()){
+            return;
+        }
+        try {
+            final NavigationView navigationView = (NavigationView) findViewById(R.id.left_drawer);
+            if(pokemonGo!= null){
+                AsyncTask at = new AsyncTask() {
+                    @Override
+                    protected void onPreExecute() {
+                        super.onPreExecute();
+                        if(navigationView != null){
+                            Progressive.showProgress(navigationView);
+                        }
+                        isUpdatingProfile.set(true);
+                    }
+
+                    @Override
+                    protected Object doInBackground(Object[] params) {
+                        try {
+                            PlayerProfile profile = pokemonGo.getPlayerProfile();
+                            profile.updateProfile();
+                            return profile;
+                        } catch (Exception e) {
+                            return e;
+                        }
+                    }
+
+                    @Override
+                    protected void onPostExecute(Object o) {
+                        super.onPostExecute(o);
+                        isUpdatingProfile.set(false);
+                        if(navigationView != null){
+                            Progressive.hideProgress(navigationView);
+                        }
+                        if(o instanceof  PlayerProfile){
+                            PlayerProfile playerProfile = (PlayerProfile)o;
+                            Map<String, String> stats = new HashMap<>();
+                            stats.put("Level", String.valueOf(playerProfile.getStats().getLevel()));
+                            stats.put("XP", String.valueOf(playerProfile.getStats().getExperience()));
+
+                            setProfile(playerProfile.getUsername(), playerProfile.getTeam().name(), stats);
+                        }else{
+                            showMessage(String.valueOf(o));
+                        }
+                    }
+                };
+                at.execute();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
 }
