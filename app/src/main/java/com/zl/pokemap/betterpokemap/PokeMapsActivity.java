@@ -152,7 +152,6 @@ public class PokeMapsActivity extends AppCompatActivity implements GoogleApiClie
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
                 getSupportActionBar().setTitle(R.string.profile);
-//                updateProfile();
             }
         };
 
@@ -188,6 +187,12 @@ public class PokeMapsActivity extends AppCompatActivity implements GoogleApiClie
         });
         mHeadLine = (TextView) headerLayout.findViewById(headline);
         mUsername = (TextView) headerLayout.findViewById(username);
+        mUsername.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateProfile();
+            }
+        });
         mTeam = (TextView) headerLayout.findViewById(R.id.team);
         mStats = (TextView) headerLayout.findViewById(R.id.stats);
         //drawer
