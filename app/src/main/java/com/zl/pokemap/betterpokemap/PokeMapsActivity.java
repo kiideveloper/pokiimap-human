@@ -455,10 +455,9 @@ public class PokeMapsActivity extends AppCompatActivity implements GoogleApiClie
                 }
             });
             return;
+        }else{
+            startActivityForResult(new Intent(PokeMapsActivity.this, AuthUiActivity.class), 1);
         }
-
-
-
     }
 
     @Override
