@@ -41,6 +41,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.VisibleRegion;
 import com.google.maps.android.SphericalUtil;
 import com.pokegoapi.api.PokemonGo;
+import com.pokegoapi.api.map.MapObjects;
 import com.pokegoapi.api.map.fort.Pokestop;
 import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
@@ -71,7 +72,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import POGOProtos.Map.Fort.FortLureInfoOuterClass;
 import POGOProtos.Map.Pokemon.MapPokemonOuterClass;
 import POGOProtos.Map.Pokemon.WildPokemonOuterClass;
 
@@ -405,8 +405,10 @@ public class MapWrapperFragment extends Fragment implements OnMapReadyCallback,
 
                                 go.setLocation(location.latitude, location.longitude, 0);
 
+                                MapObjects mapObjects = go.getMap().getMapObjects();
+
                                 java.util.Map<MarkerOptions, WildPokemonOuterClass.WildPokemon> wildPokemonMap = new HashMap<>();
-                                for(WildPokemonOuterClass.WildPokemon pokemon : go.getMap().getMapObjects().getWildPokemons()){
+                                for(WildPokemonOuterClass.WildPokemon pokemon : mapObjects.getWildPokemons()){
                                     if(pokemonCache != null){
                                         String spawnId = pokemonCache.get(String.valueOf( pokemon.getEncounterId()));
                                         if(pokemon.getSpawnPointId().equals(spawnId)){
@@ -443,12 +445,16 @@ public class MapWrapperFragment extends Fragment implements OnMapReadyCallback,
 //
 //                                }
 
+
                                 Map<MarkerOptions, Pokestop> pokestopMap = new HashMap<>();
-                                if(!"none".equalsIgnoreCase(showPokestop)){
-                                    for(Pokestop pokestop : go.getMap().getMapObjects().getPokestops()){
+
+                                boolean shouldShowPokestop = !"none".equalsIgnoreCase(showPokestop);
+                                if(shouldShowPokestop){
+                                    for(Pokestop pokestop : mapObjects.getPokestops()){
                                         if(!dedupe.contains(pokestop.getId())){
                                             dedupe.add(pokestop.getId());
-                                            if((getLureExpireAt(pokestop) > 0 || "all".equalsIgnoreCase(showPokestop))
+                                            if(((pokestop.getFortData()!=null && pokestop.getFortData().hasLureInfo())
+                                                    || "all".equalsIgnoreCase(showPokestop))
                                                     && SphericalUtil.computeDistanceBetween(center,
                                                     new LatLng(pokestop.getLatitude(), pokestop.getLongitude())) <= maxDistance){
                                                 pokestopMap.put(new MarkerOptions()
@@ -496,13 +502,7 @@ public class MapWrapperFragment extends Fragment implements OnMapReadyCallback,
                                     java.util.Map<MarkerOptions, MapPokemonOuterClass.MapPokemon> markers =
                                             ((Container)o).catchablePokemonMap;
                                     if(markers.size() > 0){
-                                        if(!hasCleared.get()){
-                                            hasCleared.set(true);
-                                            mGoogleMap.clear();
-                                            pokemons.clear();
-                                            catchablePokemons.clear();
-                                            pokestops.clear();
-                                        }
+                                        checkAndClear(hasCleared);
                                         for(Map.Entry<MarkerOptions, MapPokemonOuterClass.MapPokemon> e : markers.entrySet()){
                                             MapPokemonOuterClass.MapPokemon cp = e.getValue();
                                             MarkerOptions mo = e.getKey();
@@ -526,13 +526,7 @@ public class MapWrapperFragment extends Fragment implements OnMapReadyCallback,
                                     java.util.Map<MarkerOptions, WildPokemonOuterClass.WildPokemon> wildPokemonMap =
                                             ((Container)o).wildPokemonMap;
                                     if(wildPokemonMap.size() > 0){
-                                        if(!hasCleared.get()){
-                                            hasCleared.set(true);
-                                            mGoogleMap.clear();
-                                            pokemons.clear();
-                                            catchablePokemons.clear();
-                                            pokestops.clear();
-                                        }
+                                        checkAndClear(hasCleared);
                                         for(Map.Entry<MarkerOptions, WildPokemonOuterClass.WildPokemon> e : wildPokemonMap.entrySet()){
                                             WildPokemonOuterClass.WildPokemon pokemon = e.getValue();
                                             MarkerOptions mo = e.getKey();
@@ -553,19 +547,14 @@ public class MapWrapperFragment extends Fragment implements OnMapReadyCallback,
                                     Map<MarkerOptions, Pokestop> pokestopMap =
                                             ((Container)o).pokestopMap;
 
+                                    DateTime nowUtc = new DateTime( DateTimeZone.UTC );
                                     for(Map.Entry<MarkerOptions, Pokestop> e : pokestopMap.entrySet()){
-                                        if(!hasCleared.get()){
-                                            hasCleared.set(true);
-                                            mGoogleMap.clear();
-                                            pokemons.clear();
-                                            catchablePokemons.clear();
-                                            pokestops.clear();
-                                        }
+                                        checkAndClear(hasCleared);
                                         Pokestop pokestop = e.getValue();
                                         MarkerOptions mo = e.getKey();
 
-                                        long lureExpire = getLureExpireAt(pokestop);
-                                        mo.icon(BitmapDescriptorFactory.fromResource(lureExpire > System.currentTimeMillis()?
+                                        long lureExpire = timeTillEnd(pokestop, nowUtc);
+                                        mo.icon(BitmapDescriptorFactory.fromResource(lureExpire > 0?
                                                 (useHires?R.drawable.slure : R.drawable.lure) :
                                                 (useHires?R.drawable.spokestop : R.drawable.pokestop) ));
                                         mo.alpha(0f);
@@ -603,17 +592,15 @@ public class MapWrapperFragment extends Fragment implements OnMapReadyCallback,
 
     }
 
-    private long getLureExpireAt(Pokestop pokestop){
-        //doesnt work
-
-        long lureExpire = -1;
-        try {
-            FortLureInfoOuterClass.FortLureInfo lure = pokestop.getFortData().getLureInfo();
-            if(lure != null){
-                lureExpire = lure.getLureExpiresTimestampMs();
-            }
-        }catch (Exception ee){}
-        return lureExpire;
+    @MainThread
+    private void checkAndClear(AtomicBoolean hasCleared){
+        if(!hasCleared.get()){
+            hasCleared.set(true);
+            mGoogleMap.clear();
+            pokemons.clear();
+            catchablePokemons.clear();
+            pokestops.clear();
+        }
     }
 
     @Override
@@ -766,6 +753,13 @@ public class MapWrapperFragment extends Fragment implements OnMapReadyCallback,
         return  d.getMillis();
     }
 
+    private long timeTillEnd(Pokestop pokestop, DateTime nowUtc){
+        if(pokestop == null || pokestop.getFortData() == null || !pokestop.getFortData().hasLureInfo() ){ return 0 ; }
+
+        Duration d = new Duration(nowUtc, new DateTime(pokestop.getFortData().getLureInfo().getLureExpiresTimestampMs(), DateTimeZone.UTC));
+        return  Math.max(0, d.getMillis());
+    }
+
     @Override
     public boolean onMarkerClick(final Marker marker) {
         DateTime nowUtc = new DateTime( DateTimeZone.UTC );
@@ -855,19 +849,21 @@ public class MapWrapperFragment extends Fragment implements OnMapReadyCallback,
 
         }
 
+
         final Pokestop pokestop = pokestops.get(marker);
         if(pokestop != null){
-            long lureExpire = getLureExpireAt(pokestop) - System.currentTimeMillis();
-            if(lureExpire > 0){
-                Duration d = new Duration(lureExpire);
-                Snackbar.make(mView,
-                        MessageFormat.format("Lure expires in {0} mins {1} secs",
+            long timeTilEnd = timeTillEnd(pokestop, nowUtc);
+            if(timeTilEnd > 0){
+                Duration d = new Duration(timeTilEnd);
+                make(mView,
+                        MessageFormat.format(
+                                getString(R.string.lure_info),
                                 d.getStandardMinutes(),
                                 d.getStandardSeconds() - 60*d.getStandardMinutes()
                         ), Snackbar.LENGTH_LONG)
                         .show();
             }else{
-                Snackbar.make(mView, "Latest lure ended, it may have more", Snackbar.LENGTH_LONG)
+                Snackbar.make(mView, R.string.lure_ended, Snackbar.LENGTH_LONG)
                         .show();
             }
         }

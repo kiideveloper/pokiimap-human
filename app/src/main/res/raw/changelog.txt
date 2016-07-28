@@ -20,19 +20,19 @@
     </style>
   </head>
   <body>
-$ 0.3
-  % Version 0.3
-  * 0.3 alpha release
-  * User session improvements
+$ 0.4
+  % Version 0.4-alpha
+  * New pokemon icons
   * Various of other fixes and enhancements
   * use at your own risk, don't abuse, blah blah...
+$ 0.3
+  % Version 0.3
+  * User session improvements
 $ 0.2
   % Version 0.2
-  * 0.2 alpha release
   * fixed crash in setting
 $ 0.1
   % Version 0.1
-  * 0.1 alpha release
   * most things should work :)
 $ END_OF_CHANGE_LOG
   </body>

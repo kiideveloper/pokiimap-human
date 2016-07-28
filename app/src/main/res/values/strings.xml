@@ -29,6 +29,7 @@
     <string name="server_error_message">Server may be down or your account is (temporary) blocked.</string>
     <string name="try_different_account">Try a different account if problem continues.</string>
     <string name="pokemon_info" >{0} escapes in {1} mins {2} secs</string>
+    <string name="lure_info">Lure expires in {0} mins {1} secs</string>
     <string name="remove">Remove</string>
     <string name="escaped_message" >{0} had escaped</string>
     <string name="wait">Please wait until refresh stops...</string>
@@ -58,4 +59,5 @@
     <string name="login_method">Login method:</string>
     <string name="ptc">Pokemon Trainer Club</string>
     <string name="go">Go!</string>
+    <string name="lure_ended">Last lure ended</string>
 </resources>
