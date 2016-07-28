@@ -128,8 +128,24 @@ public class AuthUiActivity extends AppCompatActivity {
                     RequestEnvelopeOuterClass.RequestEnvelope.AuthInfo auth = (RequestEnvelopeOuterClass.RequestEnvelope.AuthInfo)o;
                     setResult(RESULT_OK);
                     finish();
+                    return;
                 }
-                Snackbar.make(mRootView, String.valueOf(o), Snackbar.LENGTH_LONG).show();
+
+                final String error = String.valueOf(o);
+
+                Snackbar.make(mRootView, error, Snackbar.LENGTH_LONG).show();
+                mRootView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(error.toLowerCase().contains("timeout")){
+                            Snackbar.make(mRootView, R.string.server_error_message, Snackbar.LENGTH_SHORT).show();
+                        }else{
+                            Snackbar.make(mRootView, R.string.check_credential, Snackbar.LENGTH_SHORT).show();
+                        }
+
+                    }
+                }, 2000);
+
             }
         };
 
