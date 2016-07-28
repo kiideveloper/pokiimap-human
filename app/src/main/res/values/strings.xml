@@ -51,4 +51,11 @@
     <string name="developer_summary">Find me on xda-developers, the best forum in the world!</string>
     <string name="loading_">Loading..</string>
     <string name="refresh_interrupted">Refresh interrupted</string>
+    <string name="use_hires">Use high res images</string>
+    <string name="use_new_icons">use new icons</string>
+    <string name="use_old_icons">use old pixel art icons</string>
+    <string name="login_headline">Login with ANY PokemonGO account</string>
+    <string name="login_method">Login method:</string>
+    <string name="ptc">Pokemon Trainer Club</string>
+    <string name="go">Go!</string>
 </resources>

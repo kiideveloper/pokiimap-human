@@ -21,14 +21,14 @@
             android:layout_gravity="center_horizontal"
             android:drawableTop="@drawable/icon_120dp"
             android:gravity="center"
-            android:text="Login with ANY PokemonGO account" />
+            android:text="@string/login_headline" />
         <TextView
             style="@style/Base.TextAppearance.AppCompat.Subhead"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:text="Login method:" />
+            android:text="@string/login_method" />
         <RadioGroup
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -46,7 +46,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:text="Pokemon Trainer Club" />
+                android:text="@string/ptc" />
         </RadioGroup>
 
         <LinearLayout
@@ -54,6 +54,9 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -63,6 +66,10 @@
                 android:nextFocusDown="@+id/password"
                 android:hint="@string/username"
                 />
+            </android.support.design.widget.TextInputLayout>
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -71,6 +78,7 @@
                 android:hint="@string/pref_password"
                 android:imeOptions="actionDone"
                 />
+            </android.support.design.widget.TextInputLayout>
         </LinearLayout>
 
         <Button
@@ -80,7 +88,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="16dp"
-            android:text="Go!" />
+            android:text="@string/go" />
 
 
         <include layout="@layout/warning" />

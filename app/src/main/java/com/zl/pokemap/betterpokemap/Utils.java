@@ -1,5 +1,6 @@
 package com.zl.pokemap.betterpokemap;
 
+import android.content.Context;
 import android.location.Location;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -12,6 +13,17 @@ import java.util.List;
 public class Utils{
     public static List<LatLng> generateLatLng(LatLng center){
         return generateLatLng(center, 2, 0.0025);
+    }
+
+    public static String getLocalizedPokemonName(String name, Context context){
+        if(name == null || context == null){ return name; }
+
+        try{
+            String sname = name.toLowerCase();
+            int id = context.getResources().getIdentifier(sname, "string", context.getPackageName());
+            return id != 0? context.getResources().getString(id) : name;
+        }catch (Exception e){}
+        return name;
     }
 
 
