@@ -20,11 +20,14 @@
     </style>
   </head>
   <body>
+$ 0.5
+  % Version 0.5-alpha
+  * Various of other fixes and enhancements
+  * use at your own risk, don't abuse, blah blah...
 $ 0.4
   % Version 0.4-alpha
   * New pokemon icons
   * Various of other fixes and enhancements
-  * use at your own risk, don't abuse, blah blah...
 $ 0.3
   % Version 0.3
   * User session improvements
