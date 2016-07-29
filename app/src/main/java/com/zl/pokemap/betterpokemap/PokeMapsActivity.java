@@ -112,6 +112,7 @@ public class PokeMapsActivity extends AppCompatActivity implements GoogleApiClie
         mStatus.postDelayed(new Runnable() {
             @Override
             public void run() {
+                mStats.setText("");
                 mStatus.setVisibility(View.GONE);
             }
         }, 2000);
