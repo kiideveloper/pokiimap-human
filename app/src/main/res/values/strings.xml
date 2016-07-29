@@ -44,7 +44,7 @@
     <string name="tap_to_loot">Tap to loot</string>
     <string name="catch_wait" >Wait 2 mins between catch/loot, {0} mins {1} sec remains.</string>
     <string name="trying_to_catch_">Trying to catch %s</string>
-    <string name="unable_to_catch">Unable to catch</string>
+    <string name="unable_to_catch">catch failed!</string>
     <string name="teleport">Don\'t teleport too far and too often!</string>
     <string name="communities">Communities</string>
     <string name="communities_summary">This app is free, open sourced, and communities supported. </string>
@@ -63,4 +63,13 @@
     <string name="go">Go!</string>
     <string name="lure_ended">Last lure ended</string>
     <string name="check_credential">Login failed, check your username and password</string>
+    <string name="loot_failed">Loot failed</string>
+    <string name="trying_to_loot_">Trying to loot...</string>
+    <string name="catching_with_">Catching with</string>
+    <string name="no_pokeball">Couldn\'t find a pokeball to use</string>
+    <string name="pokeball_changed">No {0} found, using {1} to catch</string>
+    <string name="had_escaped">had esapced!</string>
+    <string name="had_fleed">had fleed!</string>
+    <string name="catch_miss">catch missed!</string>
+    <string name="is_caught">is caught!</string>
 </resources>

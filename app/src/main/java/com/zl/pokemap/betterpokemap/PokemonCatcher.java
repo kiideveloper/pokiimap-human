@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.maps.model.Marker;
 import com.pokegoapi.api.PokemonGo;
+import com.pokegoapi.api.map.fort.Pokestop;
 import com.zl.pokemap.betterpokemap.map.MapWrapperFragment;
 
 import POGOProtos.Map.Pokemon.WildPokemonOuterClass;
@@ -14,6 +15,10 @@ import POGOProtos.Map.Pokemon.WildPokemonOuterClass;
 public class PokemonCatcher {
     //not open sourced to prevent abuse, you should be able to write it on your own
     public static long lastCatchAttempt = 0;
+
+    public void tryLootPokestop(MapWrapperFragment mapWrapperFragment, PokemonGo go, Pokestop pokestop, Marker marker) {
+    }
+
     public static class TimeHandler extends LeakGuardHandlerWrapper<TextView>{
         public TimeHandler(TextView ownerInstance) {
             super(ownerInstance);
