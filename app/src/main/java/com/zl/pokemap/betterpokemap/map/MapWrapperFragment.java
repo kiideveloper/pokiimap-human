@@ -20,6 +20,7 @@ import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Property;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -408,23 +409,34 @@ public class MapWrapperFragment extends Fragment implements OnMapReadyCallback,
                                 MapObjects mapObjects = go.getMap().getMapObjects();
 
                                 java.util.Map<MarkerOptions, WildPokemonOuterClass.WildPokemon> wildPokemonMap = new HashMap<>();
+                                String message = "";
                                 for(WildPokemonOuterClass.WildPokemon pokemon : mapObjects.getWildPokemons()){
-                                    if(pokemonCache != null){
-                                        String spawnId = pokemonCache.get(String.valueOf( pokemon.getEncounterId()));
-                                        if(pokemon.getSpawnPointId().equals(spawnId)){
-                                            continue;
+                                    try {
+                                        if(pokemonCache != null){
+                                            String spawnId = pokemonCache.get(String.valueOf( pokemon.getEncounterId()));
+                                            if(pokemon.getSpawnPointId().equals(spawnId)){
+                                                continue;
+                                            }
                                         }
+
+                                        if(!dedupe.contains(pokemon.getSpawnPointId()) && pokemon.getTimeTillHiddenMs() > 0){
+                                            dedupe.add(pokemon.getSpawnPointId());
+                                            wildPokemonMap.put(new MarkerOptions()
+                                                    .snippet(getString(R.string.tap_to_catch))
+                                                    .position(new LatLng(pokemon.getLatitude(), pokemon.getLongitude()))
+                                                    .title(Utils.getLocalizedPokemonName(pokemon.getPokemonData().getPokemonId().name(), pma)), pokemon);
+                                        }
+                                    }catch (Exception e){
+                                        message = e.getMessage();
                                     }
 
-                                    if(!dedupe.contains(pokemon.getSpawnPointId()) && pokemon.getTimeTillHiddenMs() > 0){
-                                        dedupe.add(pokemon.getSpawnPointId());
-                                        wildPokemonMap.put(new MarkerOptions()
-                                                .snippet(getString(R.string.tap_to_catch))
-                                                .position(new LatLng(pokemon.getLatitude(), pokemon.getLongitude()))
-                                                .title(Utils.getLocalizedPokemonName(pokemon.getPokemonData().getPokemonId().name(), pma)), pokemon);
-                                    }
                                 }
 
+                                if(!TextUtils.isEmpty(message)){
+                                    showErrorWorker(message, Snackbar.LENGTH_SHORT);
+                                }
+
+                                message = "";
 
                                 java.util.Map<MarkerOptions, MapPokemonOuterClass.MapPokemon> catchablePokemonMap = new HashMap<>();
                                 //not really necessary...
@@ -451,19 +463,24 @@ public class MapWrapperFragment extends Fragment implements OnMapReadyCallback,
                                 boolean shouldShowPokestop = !"none".equalsIgnoreCase(showPokestop);
                                 if(shouldShowPokestop){
                                     for(Pokestop pokestop : mapObjects.getPokestops()){
-                                        if(!dedupe.contains(pokestop.getId())){
-                                            dedupe.add(pokestop.getId());
-                                            if(((pokestop.getFortData()!=null && pokestop.getFortData().hasLureInfo())
-                                                    || "all".equalsIgnoreCase(showPokestop))
-                                                    && SphericalUtil.computeDistanceBetween(center,
-                                                    new LatLng(pokestop.getLatitude(), pokestop.getLongitude())) <= maxDistance){
-                                                pokestopMap.put(new MarkerOptions()
-                                                        .position(new LatLng(pokestop.getLatitude(), pokestop.getLongitude()))
-                                                        .title(pokestop.getDetails().getName()), pokestop);
+                                        try {
+                                            if(!dedupe.contains(pokestop.getId())){
+                                                dedupe.add(pokestop.getId());
+                                                if(((pokestop.getFortData()!=null && pokestop.getFortData().hasLureInfo())
+                                                        || "all".equalsIgnoreCase(showPokestop))
+                                                        && SphericalUtil.computeDistanceBetween(center,
+                                                        new LatLng(pokestop.getLatitude(), pokestop.getLongitude())) <= maxDistance){
+                                                    pokestopMap.put(new MarkerOptions()
+                                                            .position(new LatLng(pokestop.getLatitude(), pokestop.getLongitude()))
+                                                            .title(pokestop.getDetails().getName()), pokestop);
+                                                }
                                             }
+                                        }catch (Exception e){ message = e.getMessage();}
 
-                                        }
                                     }
+                                }
+                                if(!TextUtils.isEmpty(message)){
+                                    showErrorWorker(message, Snackbar.LENGTH_SHORT);
                                 }
 
 
