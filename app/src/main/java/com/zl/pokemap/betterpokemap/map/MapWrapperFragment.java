@@ -396,7 +396,7 @@ public class MapWrapperFragment extends Fragment implements OnMapReadyCallback,
                             try {
 
                                 if(count.get() > 0){
-                                    Thread.sleep(2000);
+                                    Thread.sleep(1000);
                                 }
                                 count.incrementAndGet();
 
