@@ -44,6 +44,7 @@ import com.zl.pokemap.betterpokemap.auth.AuthUiActivity;
 import com.zl.pokemap.betterpokemap.auth.CredentialProviderAdapter;
 import com.zl.pokemap.betterpokemap.auth.PmGoogleLogin;
 import com.zl.pokemap.betterpokemap.auth.PmPTCLogin;
+import com.zl.pokemap.betterpokemap.hack.NiceOkHttpClient;
 import com.zl.pokemap.betterpokemap.map.MapWrapperFragment;
 import com.zl.pokemap.betterpokemap.settings.SettingsActivity;
 
@@ -92,7 +93,7 @@ public class PokeMapsActivity extends AppCompatActivity implements GoogleApiClie
     TextView mTeam;
     TextView mStats;
 
-    private OkHttpClient http = new OkHttpClient();
+    private OkHttpClient http = new NiceOkHttpClient();
     private PokemonGo pokemonGo;
     private Tracker mTracker;
 
@@ -125,6 +126,8 @@ public class PokeMapsActivity extends AppCompatActivity implements GoogleApiClie
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        http.dispatcher().setMaxRequests(1);
 
         PokiiMapApplication application = (PokiiMapApplication) getApplication();
         mTracker = application.getDefaultTracker();

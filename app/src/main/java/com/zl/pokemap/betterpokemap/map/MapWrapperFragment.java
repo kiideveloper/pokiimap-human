@@ -61,7 +61,6 @@ import org.joda.time.Duration;
 import java.io.InterruptedIOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -471,8 +470,9 @@ public class MapWrapperFragment extends Fragment implements OnMapReadyCallback,
                                                         && SphericalUtil.computeDistanceBetween(center,
                                                         new LatLng(pokestop.getLatitude(), pokestop.getLongitude())) <= maxDistance){
                                                     pokestopMap.put(new MarkerOptions()
+                                                            .snippet(getString(R.string.tap_to_loot))
                                                             .position(new LatLng(pokestop.getLatitude(), pokestop.getLongitude()))
-                                                            .title(pokestop.getDetails().getName()), pokestop);
+                                                            .title("pokestop"), pokestop);
                                                 }
                                             }
                                         }catch (Exception e){ message = e.getMessage();}
@@ -525,7 +525,6 @@ public class MapWrapperFragment extends Fragment implements OnMapReadyCallback,
                                             MarkerOptions mo = e.getKey();
                                             String uri = (useHires?"s":"p") + cp.getPokemonId().getNumber();
                                             int resourceID = getResources().getIdentifier(uri, "drawable", getContext().getPackageName());
-                                            System.out.println(Arrays.asList(uri, resourceID));
                                             if(resourceID != 0){
                                                 mo.icon(BitmapDescriptorFactory.fromResource(resourceID));
                                             }
@@ -631,6 +630,22 @@ public class MapWrapperFragment extends Fragment implements OnMapReadyCallback,
             final WildPokemonOuterClass.WildPokemon pokemon = pokemons.get(marker);
             if(pokemon != null){
                 new PokemonCatcher().tryCatchPokemon(this, go, pokemon, marker);
+            }
+            final Pokestop pokestop = pokestops.get(marker);
+            if(pokestop != null){
+                Duration d = new Duration(timeTilX(pokestop.getCooldownCompleteTimestampMs()));
+                if(d.getMillis() > 0){
+                    make(mView,
+                            MessageFormat.format(
+                                    getString(R.string.pokestop_info),
+                                    d.getStandardMinutes(),
+                                    d.getStandardSeconds() - 60*d.getStandardMinutes()
+                            ), Snackbar.LENGTH_LONG)
+                            .show();
+                }else{
+                    new PokemonCatcher().tryLootPokestop(this, go, pokestop, marker);
+                }
+
             }
 
 //            MapPokemonOuterClass.MapPokemon cp = catchablePokemons.get(marker);
@@ -766,14 +781,21 @@ public class MapWrapperFragment extends Fragment implements OnMapReadyCallback,
     }
 
     private long timeTillHidden(MapPokemonOuterClass.MapPokemon cp, DateTime nowUtc){
-        Duration d = new Duration(nowUtc, new DateTime(cp.getExpirationTimestampMs(), DateTimeZone.UTC));
-        return  d.getMillis();
+        return timeTilX(cp.getExpirationTimestampMs(), nowUtc);
     }
 
     private long timeTillEnd(Pokestop pokestop, DateTime nowUtc){
         if(pokestop == null || pokestop.getFortData() == null || !pokestop.getFortData().hasLureInfo() ){ return 0 ; }
 
-        Duration d = new Duration(nowUtc, new DateTime(pokestop.getFortData().getLureInfo().getLureExpiresTimestampMs(), DateTimeZone.UTC));
+        return timeTilX(pokestop.getFortData().getLureInfo().getLureExpiresTimestampMs(), nowUtc);
+    }
+
+    private long timeTilX(long timex){
+        return timeTilX(timex, new DateTime( DateTimeZone.UTC ));
+    }
+
+    private long timeTilX(long timex, DateTime nowUtc){
+        Duration d = new Duration(nowUtc, new DateTime(timex, DateTimeZone.UTC));
         return  Math.max(0, d.getMillis());
     }
 
@@ -869,20 +891,50 @@ public class MapWrapperFragment extends Fragment implements OnMapReadyCallback,
 
         final Pokestop pokestop = pokestops.get(marker);
         if(pokestop != null){
-            long timeTilEnd = timeTillEnd(pokestop, nowUtc);
-            if(timeTilEnd > 0){
-                Duration d = new Duration(timeTilEnd);
+            if("pokestop".equals(marker.getTitle())){
+                AsyncTask at = new AsyncTask() {
+                    @Override
+                    protected void onPreExecute() {
+                        super.onPreExecute();
+                        marker.setTitle(getString(R.string.loading_));
+                        marker.hideInfoWindow();
+                        marker.showInfoWindow();
+                    }
+
+                    @Override
+                    protected Object doInBackground(Object[] params) {
+                        try {
+                            return pokestop.getDetails().getName();
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+                        return null;
+                    }
+
+                    @Override
+                    protected void onPostExecute(Object o) {
+                        super.onPostExecute(o);
+                        if(o instanceof  String){
+                            marker.setTitle((String)o);
+                            marker.hideInfoWindow();
+                            marker.showInfoWindow();
+                        }
+                    }
+                };
+                at.execute();
+            }
+
+            Duration d = new Duration(timeTilX(pokestop.getCooldownCompleteTimestampMs(), nowUtc));
+            if(d.getMillis() > 0){
                 make(mView,
                         MessageFormat.format(
-                                getString(R.string.lure_info),
+                                getString(R.string.pokestop_info),
                                 d.getStandardMinutes(),
                                 d.getStandardSeconds() - 60*d.getStandardMinutes()
                         ), Snackbar.LENGTH_LONG)
                         .show();
-            }else{
-                Snackbar.make(mView, R.string.lure_ended, Snackbar.LENGTH_LONG)
-                        .show();
             }
+
         }
         return false;
     }

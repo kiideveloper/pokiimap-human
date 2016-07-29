@@ -30,6 +30,7 @@
     <string name="try_different_account">Try a different account if problem continues.</string>
     <string name="pokemon_info" >{0} escapes in {1} mins {2} secs</string>
     <string name="lure_info">Lure expires in {0} mins {1} secs</string>
+    <string name="pokestop_info">Pokestop cools down in {0} mins {1} secs</string>
     <string name="remove">Remove</string>
     <string name="escaped_message" >{0} had escaped</string>
     <string name="wait">Please wait until refresh stops...</string>
@@ -40,7 +41,8 @@
     <string name="pokestop">Pokiistop</string>
     <string name="pokeball">Pokiiball</string>
     <string name="tap_to_catch">Tap to catch</string>
-    <string name="catch_wait" >Wait 3 mins between catch, {0} mins {1} sec remains.</string>
+    <string name="tap_to_loot">Tap to loot</string>
+    <string name="catch_wait" >Wait 2 mins between catch/loot, {0} mins {1} sec remains.</string>
     <string name="trying_to_catch_">Trying to catch %s</string>
     <string name="unable_to_catch">Unable to catch</string>
     <string name="teleport">Don\'t teleport too far and too often!</string>
