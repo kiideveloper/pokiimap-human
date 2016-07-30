@@ -163,6 +163,11 @@ public class PokeMapsActivity extends AppCompatActivity implements GoogleApiClie
             /** Called when a drawer has settled in a completely open state. */
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
+                try{
+                    if(pokemonGo != null && pokemonGo.getPlayerProfile()!=null){
+                        renderProfile(pokemonGo.getPlayerProfile());
+                    }
+                }catch (Exception e){}
                 getSupportActionBar().setTitle(R.string.profile);
             }
         };
@@ -432,11 +437,7 @@ public class PokeMapsActivity extends AppCompatActivity implements GoogleApiClie
                 mSignin.setText(R.string.sign_in);
                 if(o instanceof  PlayerProfile){
                     PlayerProfile playerProfile = (PlayerProfile)o;
-                    Map<String, String> stats = new HashMap<>();
-                    stats.put("Level", String.valueOf(playerProfile.getStats().getLevel()));
-                    stats.put("XP", String.valueOf(playerProfile.getStats().getExperience()));
-
-                    setProfile(playerProfile.getUsername(), playerProfile.getTeam().name(), stats);
+                    renderProfile(playerProfile);
                 }else{
                     setProfile("", "", Collections.<String, String>emptyMap());
                 }
@@ -448,6 +449,20 @@ public class PokeMapsActivity extends AppCompatActivity implements GoogleApiClie
             }
         };
         at.execute();
+    }
+
+    @MainThread
+    private void renderProfile(PlayerProfile playerProfile){
+        try{
+            Map<String, String> stats = new HashMap<>();
+            stats.put("Level", String.valueOf(playerProfile.getStats().getLevel()));
+            stats.put("XP", String.valueOf(playerProfile.getStats().getExperience()));
+
+            setProfile(playerProfile.getUsername(), playerProfile.getTeam().name(), stats);
+        }catch (Exception e){
+            showMessage(e.getMessage());
+        }
+
     }
 
     @MainThread

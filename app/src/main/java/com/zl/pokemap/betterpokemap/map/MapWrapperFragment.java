@@ -55,6 +55,8 @@ import com.zl.pokemap.betterpokemap.PokemonCatcher;
 import com.zl.pokemap.betterpokemap.R;
 import com.zl.pokemap.betterpokemap.Utils;
 import com.zl.pokemap.betterpokemap.hack.MapHelper;
+import com.zl.pokemap.betterpokemap.hack.settings.PokemapAppPreferences;
+import com.zl.pokemap.betterpokemap.hack.settings.PokemapSharedPreferences;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -76,6 +78,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import POGOProtos.Enums.PokemonIdOuterClass;
 import POGOProtos.Map.Pokemon.MapPokemonOuterClass;
 import POGOProtos.Map.Pokemon.WildPokemonOuterClass;
 
@@ -346,12 +349,15 @@ public class MapWrapperFragment extends Fragment implements OnMapReadyCallback,
 
                 lastRefreshAt = System.currentTimeMillis();
 
-                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
                 final String showPokestop = prefs.getString("show_pokestop", "none");
                 final boolean useHires = prefs.getBoolean("use_hires", true);
+                PokemapAppPreferences pPref = new PokemapSharedPreferences(getContext());
+                final Set<PokemonIdOuterClass.PokemonId> showPokemonIds = pPref.getShowablePokemonIDs();
+                int steps = pPref.getSteps();
 
                 List<LatLng> generated =
-                        MapHelper.getSearchArea(5, center);//.generateLatLng(center);
+                        MapHelper.getSearchArea(steps, center);//.generateLatLng(center);
 
 
                 final double maxDistance = SphericalUtil.computeDistanceBetween(
@@ -430,10 +436,12 @@ public class MapWrapperFragment extends Fragment implements OnMapReadyCallback,
 
                                         if(!dedupe.contains(pokemon.getSpawnPointId()) && pokemon.getTimeTillHiddenMs() > 0){
                                             dedupe.add(pokemon.getSpawnPointId());
-                                            wildPokemonMap.put(new MarkerOptions()
-                                                    .snippet(getString(R.string.tap_to_catch))
-                                                    .position(new LatLng(pokemon.getLatitude(), pokemon.getLongitude()))
-                                                    .title(Utils.getLocalizedPokemonName(pokemon.getPokemonData().getPokemonId().name(), pma)), pokemon);
+                                            if(showPokemonIds.contains(pokemon.getPokemonData().getPokemonId())){
+                                                wildPokemonMap.put(new MarkerOptions()
+                                                        .snippet(getString(R.string.tap_to_catch))
+                                                        .position(new LatLng(pokemon.getLatitude(), pokemon.getLongitude()))
+                                                        .title(Utils.getLocalizedPokemonName(pokemon.getPokemonData().getPokemonId().name(), pma)), pokemon);
+                                            }
                                         }
                                     }catch (Exception e){
                                         message = e.getMessage();
@@ -533,8 +541,7 @@ public class MapWrapperFragment extends Fragment implements OnMapReadyCallback,
                                         for(Map.Entry<MarkerOptions, MapPokemonOuterClass.MapPokemon> e : markers.entrySet()){
                                             MapPokemonOuterClass.MapPokemon cp = e.getValue();
                                             MarkerOptions mo = e.getKey();
-                                            String uri = (useHires?"s":"p") + cp.getPokemonId().getNumber();
-                                            int resourceID = getResources().getIdentifier(uri, "drawable", getContext().getPackageName());
+                                            int resourceID = Utils.getPokemonResourceId(getContext(), useHires, cp.getPokemonId().getNumber());
                                             if(resourceID != 0){
                                                 mo.icon(BitmapDescriptorFactory.fromResource(resourceID));
                                             }
@@ -556,8 +563,7 @@ public class MapWrapperFragment extends Fragment implements OnMapReadyCallback,
                                         for(Map.Entry<MarkerOptions, WildPokemonOuterClass.WildPokemon> e : wildPokemonMap.entrySet()){
                                             WildPokemonOuterClass.WildPokemon pokemon = e.getValue();
                                             MarkerOptions mo = e.getKey();
-                                            String uri = (useHires?"s":"p") + pokemon.getPokemonData().getPokemonId().getNumber();
-                                            int resourceID = getResources().getIdentifier(uri, "drawable", getContext().getPackageName());
+                                            int resourceID = Utils.getPokemonResourceId(getContext(), useHires, pokemon.getPokemonData().getPokemonId().getNumber());
                                             if(resourceID != 0){
                                                 mo.icon(BitmapDescriptorFactory.fromResource(resourceID));
                                             }

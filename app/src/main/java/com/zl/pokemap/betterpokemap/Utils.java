@@ -15,6 +15,12 @@ public class Utils{
         return generateLatLng(center, 2, 0.0025);
     }
 
+    public static int getPokemonResourceId(Context context, boolean useHires, int number){
+        String uri = (useHires?"s":"p") + number;
+        int resourceID = context.getResources().getIdentifier(uri, "drawable", context.getPackageName());
+        return resourceID;
+    }
+
     public static String getLocalizedPokemonName(String name, Context context){
         if(name == null || context == null){ return name; }
 

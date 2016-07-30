@@ -31,10 +31,25 @@
             android:entries="@array/pokeball_entries"
             android:entryValues="@array/pokeball_values"
             android:defaultValue="ULTRABALL" />
+        <com.zl.pokemap.betterpokemap.hack.settings.PokemonToShowPreference
+            android:dialogTitle="@string/pokemon_to_show"
+            android:title="@string/pokemon_to_show"
+            android:entries="@array/pokemon_names"
+            android:defaultValue="@array/pref_pokemons_to_show_default"
+            android:key="pokemons_to_show"/>
         <CheckBoxPreference android:key="use_hires"
             android:title="@string/use_hires" android:defaultValue="true"
             android:summaryOn="@string/use_new_icons"
             android:summaryOff="@string/use_old_icons"
+            />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Debug" android:key="debug">
+        <ListPreference
+            android:defaultValue="5"
+            android:entryValues="@array/pref_possible_steps"
+            android:entries="@array/pref_possible_steps"
+            android:key="search_steps"
+            android:title="Search range"
             />
     </PreferenceCategory>
 

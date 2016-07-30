@@ -27,4 +27,26 @@
         <item>ULTRABALL</item>
         <item>MASTERBALL</item>
     </string-array>
+
+
+    <string-array name="pref_possible_steps">
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+    </string-array>
+
+
+    <string-array name="pokemon_names">
+        <item>MISSINGNO</item>
+        <item>Pikachu</item>
+        <item>Bulbasaur</item>
+        <item>Drowsee</item>
+    </string-array>
+
+    <string-array name="pref_pokemons_to_show_default"/>
 </resources>

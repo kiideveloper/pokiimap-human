@@ -30,6 +30,10 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
                 getPreferenceScreen().removePreference(findPreference("support"));
                 getPreferenceScreen().removePreference(findPreference("developer"));
             }catch (Exception e){};
+        }else{ //release
+            try {
+                getPreferenceScreen().removePreference(findPreference("debug"));
+            }catch (Exception e){};
         }
 
     }
