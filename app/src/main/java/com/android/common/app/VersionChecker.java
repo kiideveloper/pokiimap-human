@@ -10,10 +10,10 @@ import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 
+import com.zl.pokemap.betterpokemap.LeakGuardHandlerWrapper;
 import com.zl.pokemap.betterpokemap.R;
 
 import java.io.BufferedReader;
@@ -32,14 +32,13 @@ public class VersionChecker{
     private final OkHttpClient userAgent;
     private final String versionUrl, notificationUrl;
     private float currentVersion = Float.MAX_VALUE;
-    private final Context ctx;
     private final int iconResId, uniqueNotificationId;
-    private final NotificationManager notificationManager;
-    private Handler handler = new Handler();
+    private LeakGuardHandlerWrapper<Context> handler ;
     /**
      * Creates a simple version checker
      */
     public VersionChecker(Context ctx, String versionUrl, int iconResId, int uniqueNotificationId, String notificationUrl) {
+        handler = new LeakGuardHandlerWrapper<Context>(ctx);
         this.userAgent = new OkHttpClient();
         this.versionUrl = versionUrl;
         this.iconResId = iconResId;
@@ -50,8 +49,6 @@ public class VersionChecker{
         } catch (NameNotFoundException e) {
             //should never happen
         }
-        this.ctx = ctx;
-        this.notificationManager = (NotificationManager)this.ctx.getSystemService(Context.NOTIFICATION_SERVICE);
     }
 
     public void checkVersionAvailable(){
@@ -93,23 +90,27 @@ public class VersionChecker{
 
     
     private void notifyNewVersion(final List<String> versionInfo){
-        NotificationManager nm = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
-        Intent downloadLink = new Intent(Intent.ACTION_VIEW, Uri.parse(versionInfo.get(1)));
-        PendingIntent contentIntent = PendingIntent.getActivity(ctx, 0, downloadLink, 0);
-        final NotificationCompat.Builder builder = new NotificationCompat.Builder(ctx)
-                .setAutoCancel(true)
-                .setContentIntent(contentIntent)
-                .setContentTitle(versionInfo.get(2))
-                .setContentText(versionInfo.get(3))
-                .setTicker(versionInfo.get(4))
-                .setOngoing(false)
-                .setOnlyAlertOnce(true)
-                .setColor(ctx.getResources().getColor(R.color.colorAccent))
-                .setPriority(NotificationCompat.PRIORITY_LOW)
-                .setSmallIcon(iconResId);
+        Context ctx = handler.getOwnerInstance();
+        if(ctx != null){
+            NotificationManager nm = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+            Intent downloadLink = new Intent(Intent.ACTION_VIEW, Uri.parse(versionInfo.get(1)));
+            PendingIntent contentIntent = PendingIntent.getActivity(ctx, 0, downloadLink, 0);
+            final NotificationCompat.Builder builder = new NotificationCompat.Builder(ctx)
+                    .setAutoCancel(true)
+                    .setContentIntent(contentIntent)
+                    .setContentTitle(versionInfo.get(2))
+                    .setContentText(versionInfo.get(3))
+                    .setTicker(versionInfo.get(4))
+                    .setOngoing(false)
+                    .setOnlyAlertOnce(true)
+                    .setColor(ctx.getResources().getColor(R.color.colorAccent))
+                    .setPriority(NotificationCompat.PRIORITY_LOW)
+                    .setSmallIcon(iconResId);
 
-        final Notification notification = builder.build();
-        nm.notify(uniqueNotificationId, notification);
+            final Notification notification = builder.build();
+            nm.notify(uniqueNotificationId, notification);
+        }
+
     }
 
 	public static boolean shouldNotify(Context context, int nid){
