@@ -365,9 +365,17 @@ public class MapWrapperFragment extends Fragment implements OnMapReadyCallback,
                 final double maxDistance = SphericalUtil.computeDistanceBetween(
                         center, generated.get(generated.size()-1));
 
+                final CircleOptions searchRange = new CircleOptions()
+                        .center(center)
+                        .radius(maxDistance)
+                        .strokeColor(Color.parseColor("#1E4CBC"))
+                        .strokeWidth(2)
+                        .fillColor(Color.parseColor("#331E4CBC"));
+
                 final AtomicBoolean hasCleared = new AtomicBoolean(false);
                 final AtomicInteger count = new AtomicInteger(0);
                 currentTasks.clear();
+                mGoogleMap.addCircle(searchRange);
 
                 final Set<String> dedupe = new HashSet<>();
                 for(int idx=0;idx<generated.size();idx++){
@@ -539,7 +547,7 @@ public class MapWrapperFragment extends Fragment implements OnMapReadyCallback,
                                     java.util.Map<MarkerOptions, MapPokemonOuterClass.MapPokemon> markers =
                                             ((Container)o).catchablePokemonMap;
                                     if(markers.size() > 0){
-                                        checkAndClear(hasCleared, center, maxDistance);
+                                        checkAndClear(hasCleared, searchRange);
                                         for(Map.Entry<MarkerOptions, MapPokemonOuterClass.MapPokemon> e : markers.entrySet()){
                                             MapPokemonOuterClass.MapPokemon cp = e.getValue();
                                             MarkerOptions mo = e.getKey();
@@ -561,7 +569,7 @@ public class MapWrapperFragment extends Fragment implements OnMapReadyCallback,
                                     java.util.Map<MarkerOptions, WildPokemonOuterClass.WildPokemon> wildPokemonMap =
                                             ((Container)o).wildPokemonMap;
                                     if(wildPokemonMap.size() > 0){
-                                        checkAndClear(hasCleared, center, maxDistance);
+                                        checkAndClear(hasCleared, searchRange);
                                         for(Map.Entry<MarkerOptions, WildPokemonOuterClass.WildPokemon> e : wildPokemonMap.entrySet()){
                                             WildPokemonOuterClass.WildPokemon pokemon = e.getValue();
                                             MarkerOptions mo = e.getKey();
@@ -583,7 +591,7 @@ public class MapWrapperFragment extends Fragment implements OnMapReadyCallback,
 
                                     DateTime nowUtc = new DateTime( DateTimeZone.UTC );
                                     for(Map.Entry<MarkerOptions, Pokestop> e : pokestopMap.entrySet()){
-                                        checkAndClear(hasCleared, center, maxDistance);
+                                        checkAndClear(hasCleared, searchRange);
                                         Pokestop pokestop = e.getValue();
                                         MarkerOptions mo = e.getKey();
 
@@ -643,7 +651,7 @@ public class MapWrapperFragment extends Fragment implements OnMapReadyCallback,
 
 
     @MainThread
-    private void checkAndClear(AtomicBoolean hasCleared, LatLng center, double maxDistance){
+    private void checkAndClear(AtomicBoolean hasCleared, CircleOptions searchRange){
         if(!hasCleared.get()){
             hasCleared.set(true);
             mGoogleMap.clear();
@@ -652,12 +660,7 @@ public class MapWrapperFragment extends Fragment implements OnMapReadyCallback,
             pokestops.clear();
             circles.clear();
             if(BuildConfig.DEBUG){
-                mGoogleMap.addCircle(new CircleOptions()
-                        .center(center)
-                        .radius(maxDistance)
-                        .strokeColor(Color.parseColor("#1E4CBC"))
-                        .strokeWidth(2)
-                        .fillColor(Color.parseColor("#331E4CBC")));
+                mGoogleMap.addCircle(searchRange);
             }
         }
     }
