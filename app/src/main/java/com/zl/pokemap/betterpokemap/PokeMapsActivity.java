@@ -30,6 +30,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.android.common.app.VersionChecker;
 import com.annimon.stream.function.Function;
 import com.apptopus.progressive.Progressive;
 import com.google.android.gms.analytics.HitBuilders;
@@ -127,6 +128,13 @@ public class PokeMapsActivity extends AppCompatActivity implements GoogleApiClie
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if(!BuildConfig.DEBUG){
+            new VersionChecker(this,
+                    "https://sites.google.com/site/pokiimap/home/version.txt",
+                    R.mipmap.ic_launcher, R.layout.activity_main, "").checkVersionAvailable();
+        }
+
 
         http.dispatcher().setMaxRequests(1);
 
