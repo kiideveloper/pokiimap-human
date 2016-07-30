@@ -1,5 +1,7 @@
 package com.zl.pokemap.betterpokemap.hack;
 
+import com.zl.pokemap.betterpokemap.BuildConfig;
+
 import okhttp3.Call;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -9,7 +11,7 @@ public class NiceOkHttpClient extends OkHttpClient{
     }
 
     private static final int TIMEOUT = 10*1000;
-    private static final int DELAY =500;
+    private static final int DELAY = BuildConfig.DEBUG? 200 : 500;
 
     @Override
     public int readTimeoutMillis() {

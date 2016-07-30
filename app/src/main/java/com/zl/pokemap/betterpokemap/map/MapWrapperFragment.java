@@ -360,6 +360,8 @@ public class MapWrapperFragment extends Fragment implements OnMapReadyCallback,
                         MapHelper.getSearchArea(steps, center);//.generateLatLng(center);
 
 
+
+
                 final double maxDistance = SphericalUtil.computeDistanceBetween(
                         center, generated.get(generated.size()-1));
 
@@ -537,7 +539,7 @@ public class MapWrapperFragment extends Fragment implements OnMapReadyCallback,
                                     java.util.Map<MarkerOptions, MapPokemonOuterClass.MapPokemon> markers =
                                             ((Container)o).catchablePokemonMap;
                                     if(markers.size() > 0){
-                                        checkAndClear(hasCleared);
+                                        checkAndClear(hasCleared, center, maxDistance);
                                         for(Map.Entry<MarkerOptions, MapPokemonOuterClass.MapPokemon> e : markers.entrySet()){
                                             MapPokemonOuterClass.MapPokemon cp = e.getValue();
                                             MarkerOptions mo = e.getKey();
@@ -559,7 +561,7 @@ public class MapWrapperFragment extends Fragment implements OnMapReadyCallback,
                                     java.util.Map<MarkerOptions, WildPokemonOuterClass.WildPokemon> wildPokemonMap =
                                             ((Container)o).wildPokemonMap;
                                     if(wildPokemonMap.size() > 0){
-                                        checkAndClear(hasCleared);
+                                        checkAndClear(hasCleared, center, maxDistance);
                                         for(Map.Entry<MarkerOptions, WildPokemonOuterClass.WildPokemon> e : wildPokemonMap.entrySet()){
                                             WildPokemonOuterClass.WildPokemon pokemon = e.getValue();
                                             MarkerOptions mo = e.getKey();
@@ -581,7 +583,7 @@ public class MapWrapperFragment extends Fragment implements OnMapReadyCallback,
 
                                     DateTime nowUtc = new DateTime( DateTimeZone.UTC );
                                     for(Map.Entry<MarkerOptions, Pokestop> e : pokestopMap.entrySet()){
-                                        checkAndClear(hasCleared);
+                                        checkAndClear(hasCleared, center, maxDistance);
                                         Pokestop pokestop = e.getValue();
                                         MarkerOptions mo = e.getKey();
 
@@ -641,7 +643,7 @@ public class MapWrapperFragment extends Fragment implements OnMapReadyCallback,
 
 
     @MainThread
-    private void checkAndClear(AtomicBoolean hasCleared){
+    private void checkAndClear(AtomicBoolean hasCleared, LatLng center, double maxDistance){
         if(!hasCleared.get()){
             hasCleared.set(true);
             mGoogleMap.clear();
@@ -649,6 +651,14 @@ public class MapWrapperFragment extends Fragment implements OnMapReadyCallback,
             catchablePokemons.clear();
             pokestops.clear();
             circles.clear();
+            if(BuildConfig.DEBUG){
+                mGoogleMap.addCircle(new CircleOptions()
+                        .center(center)
+                        .radius(maxDistance)
+                        .strokeColor(Color.parseColor("#1E4CBC"))
+                        .strokeWidth(2)
+                        .fillColor(Color.parseColor("#331E4CBC")));
+            }
         }
     }
 
