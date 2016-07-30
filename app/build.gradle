@@ -15,8 +15,8 @@ android {
         applicationId "com.zl.pokemap.betterpokemap"
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 5
-        versionName "0.5"
+        versionCode 999
+        versionName "SNAPSHOT"
         multiDexEnabled true
     }
     lintOptions {
