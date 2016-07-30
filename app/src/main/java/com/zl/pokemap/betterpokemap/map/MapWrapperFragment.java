@@ -49,10 +49,12 @@ import com.pokegoapi.exceptions.RemoteServerException;
 import com.vincentbrison.openlibraries.android.dualcache.Builder;
 import com.vincentbrison.openlibraries.android.dualcache.CacheSerializer;
 import com.vincentbrison.openlibraries.android.dualcache.DualCache;
+import com.zl.pokemap.betterpokemap.BuildConfig;
 import com.zl.pokemap.betterpokemap.PokeMapsActivity;
 import com.zl.pokemap.betterpokemap.PokemonCatcher;
 import com.zl.pokemap.betterpokemap.R;
 import com.zl.pokemap.betterpokemap.Utils;
+import com.zl.pokemap.betterpokemap.hack.MapHelper;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -65,8 +67,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -294,6 +298,7 @@ public class MapWrapperFragment extends Fragment implements OnMapReadyCallback,
                                 }
                                 currentTasks.clear();
                                 ((PokeMapsActivity)getActivity()).hideProgress();
+                                removeAllCircles();
                             }
                         })
                         .show();
@@ -309,6 +314,7 @@ public class MapWrapperFragment extends Fragment implements OnMapReadyCallback,
     private ConcurrentHashMap<Marker, MapPokemonOuterClass.MapPokemon> catchablePokemons = new ConcurrentHashMap<>();
     private ConcurrentHashMap<Marker, WildPokemonOuterClass.WildPokemon> pokemons = new ConcurrentHashMap<>();
     private ConcurrentHashMap<Marker, Pokestop> pokestops = new ConcurrentHashMap<>();
+    private Queue<Circle> circles = new ConcurrentLinkedQueue<>();
     private long lastRefreshAt = 0;
     private int frequentRefreshCount = 0;
     public synchronized   void showPokemon(){
@@ -344,7 +350,9 @@ public class MapWrapperFragment extends Fragment implements OnMapReadyCallback,
                 final String showPokestop = prefs.getString("show_pokestop", "none");
                 final boolean useHires = prefs.getBoolean("use_hires", true);
 
-                List<LatLng> generated = Utils.generateLatLng(center);
+                List<LatLng> generated =
+                        MapHelper.getSearchArea(5, center);//.generateLatLng(center);
+
 
                 final double maxDistance = SphericalUtil.computeDistanceBetween(
                         center, generated.get(generated.size()-1));
@@ -381,22 +389,24 @@ public class MapWrapperFragment extends Fragment implements OnMapReadyCallback,
                                     pma.showProgress();
                                     final Circle circle = mGoogleMap.addCircle(new CircleOptions()
                                             .center(ll)
-                                            .radius(200)
+                                            .radius(70)
                                             .strokeColor(Color.parseColor("#CB1D0E"))
                                             .strokeWidth(2)
                                             .fillColor(Color.parseColor("#33CB1D0E")));
+//                                    circles.add(circle);
                                     mView.postDelayed(new Runnable() {
                                         @Override
                                         public void run() {
                                             circle.remove();
                                         }
                                     }, 2000);
+
                                 }
                             });
                             try {
 
-                                if(count.get() > 0){
-                                    Thread.sleep(1000);
+                                if(count.get() > 0 && !BuildConfig.DEBUG){
+                                    Thread.sleep(500);
                                 }
                                 count.incrementAndGet();
 
@@ -589,6 +599,7 @@ public class MapWrapperFragment extends Fragment implements OnMapReadyCallback,
 
                             if(isLast){
                                 ((PokeMapsActivity)getActivity()).hideProgress();
+                                removeAllCircles();
                             }
 
                         }
@@ -608,6 +619,21 @@ public class MapWrapperFragment extends Fragment implements OnMapReadyCallback,
 
     }
 
+    private void removeAllCircles(){
+        long delay = 0;
+        for(final Circle circle : circles){
+            delay+=200;
+            mView.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    circle.remove();
+                }
+            }, delay);
+        }
+        circles.clear();
+    }
+
+
     @MainThread
     private void checkAndClear(AtomicBoolean hasCleared){
         if(!hasCleared.get()){
@@ -616,6 +642,7 @@ public class MapWrapperFragment extends Fragment implements OnMapReadyCallback,
             pokemons.clear();
             catchablePokemons.clear();
             pokestops.clear();
+            circles.clear();
         }
     }
 

@@ -20,12 +20,15 @@
     </style>
   </head>
   <body>
+$ 0.7
+  % Version 0.7-alpha
+  * faster and improved scanning
+  * use at your own risk, don't abuse, blah blah...
 $ 0.6
   % Version 0.6-alpha
   * Added more anti-anti-cheats because server added some anti-cheats
   * Tap to loot pokestop
   * Reduced time wait between catch to 2 mins
-  * use at your own risk, don't abuse, blah blah...
 $ 0.5
   % Version 0.5-alpha
   * Various of other fixes and enhancements
