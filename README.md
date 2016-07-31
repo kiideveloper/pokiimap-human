@@ -1,5 +1,5 @@
 # PokiiMap by KiiDev
-Po**kii**Map is (yet another) an Android app to help you san for pokemons in a map, because it's really important to catch'em all! 
+Po**kii**Map is basically PokeVision on Android, an app to help you san for pokemons in a map, because it's really important to catch'em all!
 
 Quick story, my wife had been obsessively playing PokemonGO since its release. I wrote this app mainly to help her play it. It's working pretty well so I decided to polish it a bit and contribute it back to the community. Download it if you like the game and hopefully it helps you. If you are a developer, fork it and join me build some awesome things before they start cracking down private API uses. 
 
