@@ -49,7 +49,6 @@ import com.pokegoapi.exceptions.RemoteServerException;
 import com.vincentbrison.openlibraries.android.dualcache.Builder;
 import com.vincentbrison.openlibraries.android.dualcache.CacheSerializer;
 import com.vincentbrison.openlibraries.android.dualcache.DualCache;
-import com.zl.pokemap.betterpokemap.BuildConfig;
 import com.zl.pokemap.betterpokemap.PokeMapsActivity;
 import com.zl.pokemap.betterpokemap.PokemonCatcher;
 import com.zl.pokemap.betterpokemap.R;
@@ -102,6 +101,8 @@ public class MapWrapperFragment extends Fragment implements OnMapReadyCallback,
         ActivityCompat.OnRequestPermissionsResultCallback {
 
     private static final int LOCATION_PERMISSION_REQUEST = 703;
+
+    private static final boolean SHOW_SEARCH_RANGE = false;
 
     private LocationRequestListener mListener;
 
@@ -378,7 +379,10 @@ public class MapWrapperFragment extends Fragment implements OnMapReadyCallback,
                 final AtomicBoolean hasCleared = new AtomicBoolean(false);
                 final AtomicInteger count = new AtomicInteger(0);
                 currentTasks.clear();
-                mGoogleMap.addCircle(searchRange);
+                if(SHOW_SEARCH_RANGE){
+                    mGoogleMap.addCircle(searchRange);
+                }
+
 
                 final Set<String> dedupe = new HashSet<>();
                 for(int idx=0;idx<generated.size();idx++){
@@ -678,7 +682,7 @@ public class MapWrapperFragment extends Fragment implements OnMapReadyCallback,
             catchablePokemons.clear();
             pokestops.clear();
             circles.clear();
-            if(BuildConfig.DEBUG){
+            if(SHOW_SEARCH_RANGE){
                 mGoogleMap.addCircle(searchRange);
             }
         }
