@@ -1,10 +1,6 @@
 # PokiiMap by KiiDev
 Po**kii**Map is basically PokeVision on Android, an app to help you san for pokemons in a map, because it's really important to catch'em all!
 
-Quick story, my wife had been obsessively playing PokemonGO since its release. I wrote this app mainly to help her play it. It's working pretty well so I decided to polish it a bit and contribute it back to the community. Download it if you like the game and hopefully it helps you. If you are a developer, fork it and join me build some awesome things before they start cracking down private API uses. 
-
-To start, import it into android studio. Then get a google map API key from google, add it to google_maps_api.xml. Build and have fun! (Messy codes warning)
-
 # Download
 If you just want to use it, get it here 
 ###[Download Section](https://github.com/kiideveloper/pokiimap/releases)
@@ -19,6 +15,12 @@ If you just want to use it, get it here
   <img src="https://github.com/kiideveloper/pokiimap/blob/master/screen2.png" width="300"/>
   <img src="https://github.com/kiideveloper/pokiimap/blob/master/screen1.png" width="300"/>
 </p>
+
+
+# Development
+Quick story, my wife had been obsessively playing PokemonGO since its release. I wrote this app mainly to help her play it. It's working pretty well so I decided to polish it a bit and contribute it back to the community. Download it if you like the game and hopefully it helps you. If you are a developer, fork it and join me build some awesome things before they start cracking down private API uses. 
+
+To start, import it into android studio. Then get a google map API key from google, add it to google_maps_api.xml. Build and have fun! (Messy codes warning)
 
 # Features
 - Login with Google or PTC
