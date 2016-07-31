@@ -1,7 +1,11 @@
+If you just want to use it, get it here 
+###[Download Section](https://github.com/kiideveloper/pokiimap/releases)
+
 # PokiiMap by KiiDev
 Po**kii**Map is basically PokeVision on Android, an app to help you san for pokemons in a map, because it's really important to catch'em all!
 
-If you just want to use it, get it here ###[Download Section](https://github.com/kiideveloper/pokiimap/releases)
+If you just want to use it, get it here 
+###[Download Section](https://github.com/kiideveloper/pokiimap/releases)
 
 ###[WARNING] If you try to catch the pokemon and they all fleed, that means you teleport too much and is temporarily blocked from catching anything. Close the game and wait 15 mins before trying it again!
 ####Do NOT use the same account on your phone at the same time, it will look like you are at 2 locations at the same time which is an obvious signal of cheating
