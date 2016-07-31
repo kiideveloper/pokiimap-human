@@ -21,6 +21,13 @@
     </PreferenceScreen>
 
     <PreferenceCategory android:title="@string/settings">
+        <ListPreference
+            android:defaultValue="5"
+            android:entryValues="@array/pref_possible_steps"
+            android:entries="@array/pref_possible_steps"
+            android:key="search_steps"
+            android:title="@string/search_range"
+            />
         <ListPreference android:title="@string/pokestop"
             android:key="show_pokestop"
             android:defaultValue="NONE"
@@ -46,10 +53,10 @@
     <PreferenceCategory android:title="Debug" android:key="debug">
         <ListPreference
             android:defaultValue="5"
-            android:entryValues="@array/pref_possible_steps"
-            android:entries="@array/pref_possible_steps"
-            android:key="search_steps"
-            android:title="Search range"
+            android:entryValues="@array/step_delay"
+            android:entries="@array/step_delay"
+            android:key="step_delay"
+            android:title="Step delay (seconds)"
             />
     </PreferenceCategory>
 

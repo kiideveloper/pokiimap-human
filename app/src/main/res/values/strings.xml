@@ -31,6 +31,7 @@
     <string name="pokemon_info" >{0} escapes in {1} mins {2} secs</string>
     <string name="lure_info">Lure expires in {0} mins {1} secs</string>
     <string name="pokestop_info">Pokestop cools down in {0} mins {1} secs</string>
+    <string name="scan_info">Scan will take about* {0} mins {1} secs</string>
     <string name="remove">Remove</string>
     <string name="escaped_message" >{0} had escaped</string>
     <string name="wait">Please wait until refresh stops...</string>
@@ -43,6 +44,7 @@
     <string name="tap_to_catch">Tap to catch</string>
     <string name="tap_to_loot">Tap to loot</string>
     <string name="catch_wait" >Wait 1 min between catch/loot, {1} sec remains.</string>
+    <string name="time_remain">Scan will finish in {0} mins {1} secs...</string>
     <string name="trying_to_catch_">Trying to catch %s</string>
     <string name="unable_to_catch">catch failed!</string>
     <string name="teleport">Don\'t teleport too far and too often!</string>
@@ -73,4 +75,5 @@
     <string name="catch_miss">catch missed!</string>
     <string name="is_caught">is caught!</string>
     <string name="pokemon_to_show">Pokiimon</string>
+    <string name="search_range">Search range</string>
 </resources>

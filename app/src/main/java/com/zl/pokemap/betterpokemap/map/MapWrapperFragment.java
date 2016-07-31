@@ -311,6 +311,8 @@ public class MapWrapperFragment extends Fragment implements OnMapReadyCallback,
         return false;
     }
 
+
+
     private ExecutorService executors = Executors.newSingleThreadExecutor();
     private AtomicBoolean stopped = new AtomicBoolean(false);
     private List<AsyncTask> currentTasks = new ArrayList<>();
@@ -355,8 +357,9 @@ public class MapWrapperFragment extends Fragment implements OnMapReadyCallback,
                 PokemapAppPreferences pPref = new PokemapSharedPreferences(getContext());
                 final Set<PokemonIdOuterClass.PokemonId> showPokemonIds = pPref.getShowablePokemonIDs();
                 int steps = pPref.getSteps();
+                final long stepDelay = pPref.getStepDelay()*1000;
 
-                List<LatLng> generated =
+                final List<LatLng> generated =
                         MapHelper.getSearchArea(steps, center);//.generateLatLng(center);
 
 
@@ -415,14 +418,30 @@ public class MapWrapperFragment extends Fragment implements OnMapReadyCallback,
                                         public void run() {
                                             circle.remove();
                                         }
-                                    }, 2000);
+                                    }, stepDelay);
 
                                 }
                             });
                             try {
 //                                && !BuildConfig.DEBUG
                                 if(count.incrementAndGet() > 0){
-                                    Thread.sleep(5000);
+                                    pma.runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            mView.postDelayed(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    Duration d = new Duration(stepDelay*(generated.size()-count.get()));
+                                                    pma.setStatus(MessageFormat.format(
+                                                            getString(R.string.time_remain),
+                                                            d.getStandardMinutes(),
+                                                            d.getStandardSeconds() - 60*d.getStandardMinutes()));
+
+                                                }
+                                            }, 3000);
+                                        }
+                                    });
+                                    Thread.sleep(stepDelay);
                                 }
 
 

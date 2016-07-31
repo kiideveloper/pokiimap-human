@@ -10,7 +10,7 @@ import POGOProtos.Enums.PokemonIdOuterClass;
 public interface PokemapAppPreferences {
 
     int getSteps();
-
+    public int getStepDelay();
     /**
      * @return a set of pokemonIDs which can be shown according to the preferences.
      */

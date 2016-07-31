@@ -24,6 +24,7 @@ $ 0.8
   % Version 0.8-alpha
   * slow down scanning due to recent server changes
   * show pokemon filters in settings
+  * search range setting
   * catch/loot delay is now 1 min
   * use at your own risk, don't abuse, blah blah...
 $ 0.7

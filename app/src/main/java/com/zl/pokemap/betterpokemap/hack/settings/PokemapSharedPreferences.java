@@ -17,7 +17,7 @@ public final class PokemapSharedPreferences implements PokemapAppPreferences {
     private static final String TAG = "PokemapSharedPreference";
 
     private static final String POKEMONS_TO_SHOW = "pokemons_to_show";
-    private static final String STEPS = "search_steps";
+    public static final String STEPS = "search_steps";
 
     private final SharedPreferences sharedPreferences;
 
@@ -28,6 +28,11 @@ public final class PokemapSharedPreferences implements PokemapAppPreferences {
     @Override
     public int getSteps() {
         return Integer.parseInt(sharedPreferences.getString(STEPS, "5"));
+    }
+
+    @Override
+    public int getStepDelay() {
+        return Integer.parseInt(sharedPreferences.getString("step_delay", "5"));
     }
 
 
