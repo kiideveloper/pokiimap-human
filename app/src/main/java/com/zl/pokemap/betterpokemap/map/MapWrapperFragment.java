@@ -420,11 +420,11 @@ public class MapWrapperFragment extends Fragment implements OnMapReadyCallback,
                                 }
                             });
                             try {
-
-                                if(count.get() > 0 && !BuildConfig.DEBUG){
-                                    Thread.sleep(500);
+//                                && !BuildConfig.DEBUG
+                                if(count.incrementAndGet() > 0){
+                                    Thread.sleep(5000);
                                 }
-                                count.incrementAndGet();
+
 
                                 LatLng location = (LatLng)objects[0];
 

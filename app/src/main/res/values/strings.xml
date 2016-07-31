@@ -42,7 +42,7 @@
     <string name="pokeball">Pokiiball</string>
     <string name="tap_to_catch">Tap to catch</string>
     <string name="tap_to_loot">Tap to loot</string>
-    <string name="catch_wait" >Wait 2 mins between catch/loot, {0} mins {1} sec remains.</string>
+    <string name="catch_wait" >Wait 1 min between catch/loot, {1} sec remains.</string>
     <string name="trying_to_catch_">Trying to catch %s</string>
     <string name="unable_to_catch">catch failed!</string>
     <string name="teleport">Don\'t teleport too far and too often!</string>
