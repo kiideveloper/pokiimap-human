@@ -23,10 +23,11 @@ To start, import it into android studio. Then get a google map API key from goog
 
 # Features
 - Login with Google or PTC
-- Show pokemons
-- Catch pokemon (try not to use it, go outside and play!)
+- Show pokemons, pokemons notifications
+- Show pokemons IVs and other stats
 - Change location (don't teleport too often and too much!)
-- Settings
+- Driving mode, search/favorites
+- Multiple accounts supports
 - Ask for donation :)
 
 # Community
