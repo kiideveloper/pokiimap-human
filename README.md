@@ -44,3 +44,4 @@ https://www.reddit.com/r/pokemongodev/comments/4trjum/pok%C3%A9mon_go_developmen
 see https://www.reddit.com/r/pokemongodev/comments/4td499/a_note_about_security/
 
 I have no interests in stealing your accounts and passwords.  
+ 
