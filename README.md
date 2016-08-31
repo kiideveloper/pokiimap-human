@@ -1,6 +1,9 @@
 If you just want to use it, get it here 
 ###[Download Section](https://github.com/kiideveloper/pokiimap/releases/latest)
 
+###[Documentations Site](http://pokiimap.readthedocs.io/)
+
+
 # PokiiMap by KiiDev
 Po**kii**Map is basically PokeVision on Android, an app to help you san for pokemons in a map, because it's really important to catch'em all!
 
