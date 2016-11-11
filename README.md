@@ -16,7 +16,7 @@ Po**kii**Map is basically PokeVision on Android, an app to help you san for poke
 <p align="center">
   <img src="https://github.com/kiideveloper/pokiimap/blob/master/screen2.png" width="300"/>
   <img src="https://github.com/kiideveloper/pokiimap/blob/master/screen1.png" width="300"/>
-</p>
+</p> 
 
 
 # Development
